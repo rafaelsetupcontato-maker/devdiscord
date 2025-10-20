@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Simulação — Mensagem Zyo</title>
+<style>
+  :root{--bg:#071023;--card:#081028;--accent:#6366f1;--danger:#ef4444}
+  body{margin:0;font-family:Inter,system-ui, -apple-system, 'Segoe UI', Roboto, Arial;background:linear-gradient(180deg,var(--bg),#020317);color:#e6eef8;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+  .card{width:720px;max-width:100%;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;padding:20px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 40px rgba(2,6,23,0.6)}
+  header{display:flex;align-items:center;gap:12px}
+  .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#4f46e5);display:flex;align-items:center;justify-content:center;font-weight:800;color:white}
+  h1{margin:0;font-size:18px}
+  p.lead{margin:6px 0 12px;color:rgba(230,238,248,0.75)}
+  .sim-badge{display:inline-block;background:var(--danger);color:white;padding:6px 8px;border-radius:8px;font-weight:700;margin-left:8px;font-size:13px}
+  .layout{display:grid;grid-template-columns:1fr 320px;gap:18px;margin-top:14px}
+  .message-box{background:rgba(255,255,255,0.02);padding:16px;border-radius:10px;border:1px solid rgba(255,255,255,0.02)}
+  .message{text-wrap:normal;white-space:pre-wrap;font-size:16px;line-height:1.45}
+  .meta{margin-top:12px;color:rgba(230,238,248,0.7);font-size:13px}
+  .stats{background:rgba(255,255,255,0.02);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.02)}
+  .count{font-size:34px;font-weight:800}
+  .label{font-size:13px;color:rgba(230,238,248,0.7)}
+  .actions{display:flex;gap:8px;margin-top:12px}
+  .btn{padding:10px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+  .btn.primary{background:var(--accent);color:white}
+  .btn.ghost{background:rgba(255,255,255,0.03);color:inherit}
+  input[type="text"], textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit}
+  textarea{min-height:120px;resize:vertical}
+  footer{margin-top:12px;font-size:13px;color:rgba(230,238,248,0.65)}
+  @media(max-width:880px){.layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <div class="card" role="main">
+    <header>
+      <div class="logo">Z</div>
+      <div>
+        <h1>Simulação pública — Mensagem estilo Zyo <span class="sim-badge">SIMULAÇÃO</span></h1>
+        <p class="lead">Esta página é uma simulação visual para mostrar a sua mensagem com um contador. <strong>Não é o site oficial do Zyo.</strong></p>
+      </div>
+    </header>
+
+    <div class="layout">
+      <div>
+        <div class="message-box">
+          <div class="label">Mensagem (cole a mesma mensagem do seu Zyo abaixo):</div>
+          <textarea id="msgInput" placeholder="Cole aqui a mensagem do seu Zyo...">Cole aqui a mensagem do seu Zyo...</textarea>
+          <div class="meta">Visualização simulada — visível para quem acessar esta página.</div>
+
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button id="applyMsg" class="btn primary">Aplicar mensagem</button>
+            <button id="copyMsg" class="btn ghost">Copiar mensagem</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px" class="message-box">
+          <div class="label">Pré-visualização da mensagem:</div>
+          <div id="preview" class="message">Cole aqui a mensagem do seu Zyo...</div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="stats">
+          <div class="label">Visualizações</div>
+          <div class="count" id="views">5.604.000</div>
+          <div class="meta">Número definido pelo host (simulado).</div>
+
+          <div style="margin-top:10px">
+            <label class="label">Alterar visualizações:</label>
+            <input id="viewsInput" type="text" value="5604000" />
+            <div class="actions">
+              <button id="applyViews" class="btn primary">Aplicar</button>
+              <button id="resetViews" class="btn ghost">Reset</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <label class="label">Link alvo (opcional)</label>
+            <input id="targetInput" type="text" value="https://zyo.se/devdiscord" />
+            <div class="actions">
+              <button id="openTarget" class="btn primary">Abrir link</button>
+              <button id="copyLink" class="btn ghost">Copiar link</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px" class="message-box">
+          <div class="label">Compartilhar esta simulação</div>
+          <div class="actions">
+            <button id="share" class="btn ghost">Compartilhar página</button>
+            <button id="download" class="btn ghost">Baixar HTML</button>
+          </div>
+          <div class="meta" style="margin-top:8px">Se for publicar, mantenha o aviso de simulação visível para evitar confusão.</div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>Gerado por ChatGPT — Página de simulação pública. Não se passe pelo site oficial.</footer>
+  </div>
+
+<script>
+  // Init values
+  document.getElementById('preview').innerText = document.getElementById('msgInput').value;
+
+  document.getElementById('applyMsg').addEventListener('click', () => {
+    const v = document.getElementById('msgInput').value || '';
+    document.getElementById('preview').innerText = v;
+    document.getElementById('applyMsg').innerText = 'Aplicado';
+    setTimeout(()=> document.getElementById('applyMsg').innerText = 'Aplicar mensagem', 1200);
+  });
+
+  document.getElementById('copyMsg').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(document.getElementById('msgInput').value); document.getElementById('copyMsg').innerText='Copiado!'; setTimeout(()=> document.getElementById('copyMsg').innerText='Copiar mensagem',1200);} catch(e){ alert('Não foi possível copiar'); }
+  });
+
+  // Views control
+  function fmt(n){ return Number(n).toLocaleString(); }
+  document.getElementById('views').innerText = fmt(document.getElementById('viewsInput').value || 0);
+
+  document.getElementById('applyViews').addEventListener('click', ()=> {
+    const v = document.getElementById('viewsInput').value.replace(/[^0-9]/g,'');
+    document.getElementById('views').innerText = fmt(v||0);
+    document.getElementById('applyViews').innerText='Aplicado';
+    setTimeout(()=> document.getElementById('applyViews').innerText='Aplicar',1200);
+  });
+
+  document.getElementById('resetViews').addEventListener('click', ()=> {
+    document.getElementById('viewsInput').value = '5604000';
+    document.getElementById('views').innerText = fmt(5604000);
+  });
+
+  // Link actions
+  document.getElementById('openTarget').addEventListener('click', ()=> {
+    const url = document.getElementById('targetInput').value || '#';
+    window.open(url, '_blank');
+  });
+  document.getElementById('copyLink').addEventListener('click', async ()=> {
+    try{ await navigator.clipboard.writeText(document.getElementById('targetInput').value); document.getElementById('copyLink').innerText='Copiado!'; setTimeout(()=> document.getElementById('copyLink').innerText='Copiar link',1200);}catch(e){alert('Não foi possível copiar');}
+  });
+
+  // Share / download
+  document.getElementById('share').addEventListener('click', async ()=> {
+    const url = window.location.href;
+    try{ if(navigator.share) await navigator.share({title:'Simulação de mensagem', text:'Veja esta simulação', url}); else prompt('Link para compartilhar:', url);}catch(e){console.log(e);}
+  });
+
+  document.getElementById('download').addEventListener('click', ()=> {
+    const html = '<!doctype html>\n' + document.documentElement.outerHTML;
+    const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'simulacao-mensagem-zyo.html';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // Support: prefill from query params ?views=...&msg=...
+  (function(){
+    const params = new URLSearchParams(window.location.search);
+    if(params.get('views')){ document.getElementById('viewsInput').value = params.get('views'); document.getElementById('views').innerText = fmt(params.get('views')); }
+    if(params.get('msg')){ const m = decodeURIComponent(params.get('msg')); document.getElementById('msgInput').value = m; document.getElementById('preview').innerText = m; }
+  })();
+</script>
+</body>
+</html>
